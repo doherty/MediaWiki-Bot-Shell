@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+package
+    pwb;
+# ABSTRACT: a shell interface to your MediaWiki::Bot
+
+use MediaWiki::Bot::Shell;
+my $shell = MediaWiki::Bot::Shell->new();
+$shell->cmdloop();
+
+=head1 SEE ALSO
+
+=over 4
+
+=item *
+
+L<MediaWiki::Bot::Shell>
+
+=item *
+
+L<MediaWiki::Bot>
+
+=item *
+
+L<http://hashbang.ca/~mike/page/projects/perlwikibot-scripts>
+
+=back
+

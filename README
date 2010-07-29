@@ -1,0 +1,16 @@
+NAME
+    MediaWiki::Bot::Shell - a shell interface to your MediaWiki::Bot
+
+VERSION
+    version 0.001
+
+AUTHOR
+    Mike.lifeguard <lifeguard@cpan.org>
+
+COPYRIGHT AND LICENSE
+    This software is Copyright (c) 2010 by Mike.lifeguard.
+
+    This is free software, licensed under:
+
+      The GNU General Public License, Version 3, June 2007
+
