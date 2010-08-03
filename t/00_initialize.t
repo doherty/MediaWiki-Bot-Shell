@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::More tests => 4;
+
 BEGIN {
     my $bail_diagnostic = <<'end';
 There was a problem use-ing the module. Typically,
@@ -16,9 +17,13 @@ end
 };
 
 # Simple initialization
-my $shell = new_ok('MediaWiki::Bot::Shell');
+my $opts = {
+    norc    => 1,
+
+};
+my $shell = new_ok('MediaWiki::Bot::Shell' => );
 isa_ok($shell, 'MediaWiki::Bot::Shell');
 
-my @methods = qw(cmdloop);
+my @methods = qw(new cmdloop);
 can_ok($shell, @methods);
 

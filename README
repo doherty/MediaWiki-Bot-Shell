@@ -1,16 +1,102 @@
 NAME
     MediaWiki::Bot::Shell - a shell interface to your MediaWiki::Bot
 
-VERSION
-    version 0.001
+SYNOPSIS
+        use MediaWiki::Bot::Shell;
 
-AUTHOR
-    Mike.lifeguard <lifeguard@cpan.org>
+        my $shell = MediaWiki::Bot::Shell->new();
+        $shell->cmdloop();
 
-COPYRIGHT AND LICENSE
-    This software is Copyright (c) 2010 by Mike.lifeguard.
+DESCRIPTION
+    This provides a shell interface to your MediaWiki::Bot. By initializing
+    one or more MediaWiki::Bot objects and using them for the duration of
+    your shell session, initialization costs are amortized.
 
-    This is free software, licensed under:
+    Configuration data is read from ~/.perlwikibot-shell.rc, or prompted for
+    at startup. As an example:
 
-      The GNU General Public License, Version 3, June 2007
+        u@h:~$ cat .perlwikibot-shell.rc
+        username    = Mike's bot account
+        password    = fibblewibble
+        host        = meta.wikimedia.org
+        do_sul      = yes
+
+    You should probably just run "pwb", which is included with this module
+    to enter your shell.
+
+OPTIONS
+    Options are passed to the constructor as a hashref. Options are
+    currently:
+
+    debug
+        Like it says on the tin. Setting debug provides debug output from
+        this module, as well as from the underlying MediaWiki::Bot
+        object(s).
+
+    norc
+        Don't read options from ~/.perlwikibot-shell.rc. This will result in
+        the user being prompted for username, password etc.
+
+COMMANDS
+  delete
+    This will delete a page on the wiki you're currently using:
+
+        delete "Main Page" "for teh lulz"
+
+    To delete a page on another wiki, use [[w:fr:Page Title]]:
+
+        delete "[[w:fr:Page Title]]" "pour les lulz"
+
+    Make sure you quote your input correctly.
+
+  set_wiki
+    Switch wikis:
+
+        set_wiki meta.wikimedia.org
+        set_wiki secure.wikimedia.org wikipedia/meta/w
+
+  debug
+    Turn debugging on or off
+
+        debug on
+        debug off
+
+  read
+    Read the wikitext of the given page. Remember to quote the page title
+    correctly:
+
+        read "Main Page"
+
+  kill
+    Lock a cross-wiki vandal's account:
+
+        kill "Some stupid vandal"
+
+  nuke
+    Lock and hide a cross-wiki vandal's account;
+
+        nuke "Mike.lifeguard lives at 123 Main St."
+
+  globalblock
+    Apply a global block to an IP or CIDR range:
+
+        globalblock 127.0.0.1 --expiry "31 hours"
+        globalblock 192.168.0.1 --no-anon-only
+
+    Options:
+
+    --block, --no-block
+        Whether to block or unblock the target. Default is to block. When
+        unblocking, all settings except "--reason" are ignored.
+
+    --anon-only, --ao
+    --no-anon-only, --no-ao
+        Whether to block only anonymous users, or all users. Default is to
+        hardblock (no-anon-only).
+
+    --reason, --summary
+        Sets the block reason.
+
+    --expiry, --length
+        Sets the block expiry.
 

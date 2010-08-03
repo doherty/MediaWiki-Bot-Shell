@@ -4,10 +4,54 @@ use warnings;
 
 package
     pwb;
-# ABSTRACT: a shell interface to your MediaWiki::Bot
+
+=head1 NAME
+
+pwb - a shell interface to your MediaWiki::Bot
+
+=head1 SYNOPSIS
+
+B<pwb> [B<--norc>] [B<--verbose> --debug]
+
+=head1 DESCRIPTION
+
+B<pwb> (which stands for PerlWikiBot) is the default entrance to
+L<MediaWiki::Bot::Shell>, which provides a shell interface to your
+L<MediaWiki::Bot> (a Perl framework for writing bots to interface with
+MediaWiki wikis).
+
+=cut
 
 use MediaWiki::Bot::Shell;
-my $shell = MediaWiki::Bot::Shell->new();
+use Getopt::Long;
+use Term::Prompt;
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--verbose>, --debug
+
+Sets the verbosity level. Currently, only on or off, but in the future,
+providing this option once will give only error messages, while giving
+it twice will provide more detailed non-error output.
+
+=item B<--norc>
+
+Skips reading F<~/.perlwikibot-shell.rc>, and prompts for the same data
+instead.
+
+=back
+
+=cut
+
+my %opts = ();
+GetOptions(\%opts,
+    'verbose|debug+',
+    'norc',
+);
+
+my $shell = MediaWiki::Bot::Shell->new(\%opts);
 $shell->cmdloop();
 
 =head1 SEE ALSO
