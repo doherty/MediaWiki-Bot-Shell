@@ -510,22 +510,32 @@ Sets the block expiry.
 sub run_rollback {
     my $o    = shift;
     my $user = shift;
+    my @args = @_;
+
+    my $force = 0;
+    my $result = GetOptionsFromArray (\@args,
+        'force' => \$force,
+    );
+    my $max = ($force ? 0 : 10);
 
     my $u = $o->{'SHELL'}->{'bot'};
     my $debug = $o->{'SHELL'}->{'debug'};
 
-    $u->top_edits($user, { hook =>
-        sub {
+    $u->top_edits($user, {
+        max => $max,
+        hook => sub {
             my $pages = shift;
 
             RV: foreach my $page (@$pages) {
+                # CAREFUL! top_edits can't filter results when you use a callback
                 next RV unless exists($page->{'top'});
+
                 my $title = $page->{'title'};
                 print "Rolling back edit on $title... " if $debug;
                 my $success = $u->rollback($title, $user, undef, 1);
                 print ($success ? "OK\n" : "FAILED\n") if $debug;
             }
-        }
+        },
     });
 
     print "Finished reverting edits by $user.\n" if $debug;
@@ -541,6 +551,19 @@ Finds all top edits by the specified user and rolls them back using
 mark-as-bot.
 
     rollback "Fugly vandal"
+
+=over 4
+
+=item B<--force>
+
+Override the 10-query limit. Use this when reverting mass vandals which
+have done hundreds of edits. The limit is intended to guard against
+accidentally rolling back edits of an established user.
+
+=back
+
+Note that this does not (currently) revert page moves, nor delete page
+creations.
 
 =cut
 
