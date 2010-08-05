@@ -406,7 +406,7 @@ sub help_nuke {
     my $help = <<'=cut';
 =head2 nuke
 
-Lock B<and hide> a cross-wiki vandal's account;
+The nuclear option: globally lock I<and hide> an account:
 
     nuke "Mike.lifeguard lives at 123 Main St."
 
@@ -476,7 +476,7 @@ Apply a global block to an IP or CIDR range:
     globalblock 127.0.0.1 --expiry "31 hours"
     globalblock 192.168.0.1 --no-anon-only
 
-Options:
+=head3 Options:
 
 =over 4
 
@@ -570,6 +570,39 @@ creations.
     return _render_help($help);
 }
 
+=head1 SEE ALSO
+
+L<pwb>, L<MediaWiki::Bot> and L<the admin plugin|MediaWiki::Bot::Plugin::Admin>,
+and L<http://hashbang.ca/~mike/page/projects/perlwikibot-scripts>.
+
+=head1 BUGS
+
+Yes. Report them at L<http://bugzilla.hashbang.ca/...>
+
+=head1 AUTHOR
+
+Mike.lifeguard <mike.lifeguard@gmail.com>
+
+=head1 COPYING
+
+Copyright (C) 2010 by Mike.lifeguard.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut
+
 1;
 
 __END__
+

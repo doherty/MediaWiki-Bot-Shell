@@ -11,14 +11,17 @@ pwb - a shell interface to your MediaWiki::Bot
 
 =head1 SYNOPSIS
 
-B<pwb> [B<--norc>] [B<--verbose> --debug]
+B<pwb> [ B<--norc> ] [ B<--verbose> --debug ]
 
 =head1 DESCRIPTION
 
-B<pwb> (which stands for PerlWikiBot) is the default entrance to
+B<pwb> (which stands for I<P>erlI<W>ikiI<B>ot) is the default entrance to
 L<MediaWiki::Bot::Shell>, which provides a shell interface to your
 L<MediaWiki::Bot> (a Perl framework for writing bots to interface with
 MediaWiki wikis).
+
+See L<MediaWiki::Bot::Shell>, or run C<help> in the shell, for
+information on the available commands.
 
 =cut
 
@@ -54,21 +57,54 @@ GetOptions(\%opts,
 my $shell = MediaWiki::Bot::Shell->new(\%opts);
 $shell->cmdloop();
 
+=head1 FILES
+
+F<~/.perlwikibot-shell.rc> holds login details. The format is simple:
+
+    username = My username          # Your username
+    password = totallysecure        # You guessed it!
+    host     = meta.wikimedia.org   # Where to log in
+    do_sul   = no                   # Whether to do SUL login (takes a bit longer)
+
+By specifying protocol, host, and path, you can use the secure server:
+
+    ...
+    protocol = https
+    host     = secure.wikimedia.org
+    path     = wikipedia/meta/w
+    do_sul   = no                   # No need for SUL when using the secure server
+
+If the B<--norc> option is used, or the file doesn't exist or isn't
+readable, the user will be prompted for this information.
+
 =head1 SEE ALSO
 
-=over 4
+L<MediaWiki::Bot::Shell>, L<MediaWiki::Bot> and L<the admin plugin|MediaWiki::Bot::Plugin::Admin>,
+and L<http://hashbang.ca/~mike/page/projects/perlwikibot-scripts>.
 
-=item *
+=head1 BUGS
 
-L<MediaWiki::Bot::Shell>
+Yes. Report them at L<http://bugzilla.hashbang.ca/...>
 
-=item *
+=head1 AUTHOR
 
-L<MediaWiki::Bot>
+Mike.lifeguard <mike.lifeguard@gmail.com>
 
-=item *
+=head1 COPYING
 
-L<http://hashbang.ca/~mike/page/projects/perlwikibot-scripts>
+Copyright (C) 2010 by Mike.lifeguard.
 
-=back
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut
