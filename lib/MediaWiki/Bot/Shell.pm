@@ -507,6 +507,46 @@ Sets the block expiry.
     return _render_help($help);
 }
 
+sub run_rollback {
+    my $o    = shift;
+    my $user = shift;
+
+    my $u = $o->{'SHELL'}->{'bot'};
+    my $debug = $o->{'SHELL'}->{'debug'};
+
+    $u->top_edits($user, { hook =>
+        sub {
+            my $pages = shift;
+
+            RV: foreach my $page (@$pages) {
+                next RV unless exists($page->{'top'});
+                my $title = $page->{'title'};
+                print "Rolling back edit on $title... " if $debug;
+                my $success = $u->rollback($title, $user, undef, 1);
+                print ($success ? "OK\n" : "FAILED\n") if $debug;
+            }
+        }
+    });
+
+    print "Finished reverting edits by $user.\n" if $debug;
+}
+sub smry_rollback {
+    return q{rollback all of a vandal's edits};
+}
+sub help_rollback {
+    my $help = <<'=cut';
+=head2 rollback
+
+Finds all top edits by the specified user and rolls them back using
+mark-as-bot.
+
+    rollback "Fugly vandal"
+
+=cut
+
+    return _render_help($help);
+}
+
 1;
 
 __END__
