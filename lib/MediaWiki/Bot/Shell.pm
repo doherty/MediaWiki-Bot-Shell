@@ -5,13 +5,14 @@ package MediaWiki::Bot::Shell;
 
 use base qw(Term::Shell);
 use MediaWiki::Bot '3.1.6';
-use Config::General qw(ParseConfig);
+use Config::General qw(ParseConfig SaveConfig);
 use Term::Prompt;
 use Getopt::Long qw(GetOptionsFromArray);
 use Pod::Select;
 use Pod::Text::Termcap;
 use IO::Handle;
 use Encode;
+use File::Copy qw(cp);
 
 binmode(STDOUT, ':encoding(utf8)');
 binmode(STDERR, ':encoding(utf8)');
@@ -34,15 +35,9 @@ or more MediaWiki::Bot objects and using them for the duration of your shell
 session, initialization costs are amortized.
 
 Configuration data is read from F<~/.perlwikibot-shell.rc>, or prompted for at
-startup. As an example:
+startup.
 
-    u@h:~$ cat .perlwikibot-shell.rc
-    username    = Mike's bot account
-    password    = fibblewibble
-    host        = meta.wikimedia.org
-    do_sul      = yes
-
-You should probably just run C<pwb>, which is included with this module to enter
+You should probably run C<pwb>, which is included with this module, to enter
 your shell.
 
 =head1 OPTIONS
@@ -108,9 +103,18 @@ sub preloop {
     STDOUT->autoflush(1);
     STDERR->autoflush(1);
 
-    if (-r "$ENV{'HOME'}/.perlwikibot-shell.rc" and !$options->{'norc'}) {
+    my $filename = "$ENV{'HOME'}/.perlwikibot-shell.rc";
+    if (-r $filename and !$options->{'norc'}) {
+        my $chmod = (stat(_))[2] & 07777;
+        if ($chmod != 0600) {
+            my $do_chmod = prompt('y', "$filename isn't private - should I try to make it so?", '', 'y');
+            if ($do_chmod) {
+                chmod 0600, $filename or die "Couldn't chmod $filename: $!";
+            }
+        }
+
         my %main = ParseConfig (
-            -ConfigFile     => "$ENV{'HOME'}/.perlwikibot-shell.rc",
+            -ConfigFile     => $filename,
             -AutoTrue       => 1,
             -UTF8           => 1,
         );
@@ -130,28 +134,45 @@ sub preloop {
         $o->{'SHELL'}->{'bot'} = $bot;
     }
     else {
-        my $host      = prompt('x', 'Domain name:', '', 'meta.wikimedia.org');
-        my $path      = 'w';
-        my $protocol  = 'http';
-        if ($host eq 'secure.wikimedia.org') {
-            $path     = prompt('x', 'Path:', '', 'wikipedia/meta/w');
-            $protocol = 'https';
-        }
-        my $username  = prompt('x', 'Account name:', '', '');
-        my $password  = prompt('p', 'Password:', '', '');
+        my %main;
+        $main{'username'}  = prompt('x', 'Account name:', '', '');
+        $main{'password'}  = prompt('p', 'Password:', '', '');
         print "\n";
-        my $do_sul    = prompt('y', 'Use SUL?', '', 'y');
+        $main{'host'}      = prompt('x', 'Domain name:', '', 'meta.wikimedia.org');
+        $main{'path'}      = 'w';
+        $main{'protocol'}  = 'http';
+        if ($main{'host'} eq 'secure.wikimedia.org') {
+            $main{'path'}     = prompt('x', 'Path:', '', 'wikipedia/meta/w');
+            $main{'protocol'} = 'https';
+            $main{'do_sul'}   = 0;
+        }
+        else {
+            $main{'do_sul'} = prompt('y', 'Use SUL?', '', 'y');
+        }
+
+        my $save = prompt('y', 'Save settings for next time?', '', 'y');
+        if ($save) {
+            if (-e $filename) {
+                my $clobber = prompt('y', "$filename already exists - overwrite?", '', 'n');
+                cp($filename, "$filename.bak") or die "Couldn't make a backup: $!";
+            }
+            SaveConfig($filename, \%main);
+            chmod 0600, $filename or die "Couldn't chmod 600 $filename: $!";
+        }
+        else {
+            print "You didn't want to save the settings, so I threw them away\n";
+        }
 
         print "Logging in...";
         my $bot = MediaWiki::Bot->new({
-            login_data => { username => $username,
-                            password => $password,
-                            do_sul   => $do_sul,
+            login_data => { username => $main{'username'},
+                            password => $main{'password'},
+                            do_sul   => $main{'do_sul'},
             },
-            protocol    => $protocol,
-            host        => $host,
-            path        => $path,
-            debug       => $debug,
+            protocol    => $main{'protocol'},
+            host        => $main{'host'},
+            path        => $main{'path'},
+            debug       => $main{'debug'},
         });
         print ($bot ? " OK\n" : " FAILED\n");
         $o->{'SHELL'}->{'bot'} = $bot;
