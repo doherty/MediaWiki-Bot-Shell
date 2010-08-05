@@ -100,7 +100,8 @@ sub preloop {
     my $o = shift;
     my $options = $o->{'API'}->{'args'}->[0];
 
-    my $debug = $options->{'verbose'} || 0;
+    $o->{'SHELL'}->{'debug'} = $options->{'verbose'} || 0;
+    my $debug = $o->{'SHELL'}->{'debug'};
     print "Debugging on\n" if $debug;
 
     print "Setting STDOUT and STDERR to autoflush.\n" if $debug;
@@ -266,27 +267,26 @@ sub run_debug {
     my $o     = shift;
     my $debug = shift;
 
-    my $u = $o->{'SHELL'}->{'bot'};
-
     my $on  = "Debug output on\n";
     my $off = "Debug output off\n";
     if (!defined($debug)) {
-        $u->{'debug'} = 1;
+        $o->{'SHELL'}->{'debug'} = 1;
         print $on;
     }
     elsif (defined($debug) and $debug =~ m/^(y|yes|1|true|on)$/i) {
-        $u->{'debug'} = 1;
+        $o->{'SHELL'}->{'debug'} = 1;
         print $on;
     }
     elsif (defined($debug) and $debug =~ m/^(n|no|0|false|off)$/i) {
-        $u->{'debug'} = 0;
+        $o->{'SHELL'}->{'debug'} = 0;
         print $off;
     }
     else {
         $debug = prompt('y', 'Provide debug output?', '', 'n');
-        $u->{'debug'} = $debug;
+        $o->{'SHELL'}->{'debug'} = $debug;
         print ($debug ? $on : $off);
     }
+    $o->{'SHELL'}->{'bot'} = $o->{'SHELL'}->{'debug'};
 }
 sub smry_debug {
     return 'switch debugging on or off';
