@@ -193,7 +193,7 @@ sub postloop {
 sub run_delete  {
     my $o       = shift;
     my $page    = shift;
-    my $summary = shift || 'Vandalism';
+    my $summary = shift || 'Vandalism ([[m:S|S]])';
     if (@_ > 0) {
         my $abort = prompt('y', 'Abort?', qq{Check your quoting - did you mean to delete [[$page]] with reason "$summary"?}, 'y');
         return 1 if $abort;
