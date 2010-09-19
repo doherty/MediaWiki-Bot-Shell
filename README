@@ -13,16 +13,10 @@ DESCRIPTION
     your shell session, initialization costs are amortized.
 
     Configuration data is read from ~/.perlwikibot-shell.rc, or prompted for
-    at startup. As an example:
+    at startup.
 
-        u@h:~$ cat .perlwikibot-shell.rc
-        username    = Mike's bot account
-        password    = fibblewibble
-        host        = meta.wikimedia.org
-        do_sul      = yes
-
-    You should probably just run "pwb", which is included with this module
-    to enter your shell.
+    You should probably run "pwb", which is included with this module, to
+    enter your shell.
 
 OPTIONS
     Options are passed to the constructor as a hashref. Options are
@@ -73,7 +67,7 @@ COMMANDS
         kill "Some stupid vandal"
 
   nuke
-    Lock and hide a cross-wiki vandal's account;
+    The nuclear option: globally lock *and hide* an account:
 
         nuke "Mike.lifeguard lives at 123 Main St."
 
@@ -83,8 +77,7 @@ COMMANDS
         globalblock 127.0.0.1 --expiry "31 hours"
         globalblock 192.168.0.1 --no-anon-only
 
-    Options:
-
+   Options:
     --block, --no-block
         Whether to block or unblock the target. Default is to block. When
         unblocking, all settings except "--reason" are ignored.
@@ -99,4 +92,53 @@ COMMANDS
 
     --expiry, --length
         Sets the block expiry.
+
+  rollback
+    Finds all top edits by the specified user and rolls them back using
+    mark-as-bot.
+
+        rollback "Fugly vandal"
+
+    --force
+        Override the 10-query limit. Use this when reverting mass vandals
+        which have done hundreds of edits. The limit is intended to guard
+        against accidentally rolling back edits of an established user.
+
+    Note that this does not (currently) revert page moves, nor delete page
+    creations.
+
+SEE ALSO
+    pwb, MediaWiki::Bot and the admin plugin, and
+    <http://hashbang.ca/~mike/page/projects/perlwikibot-scripts>.
+
+BUGS
+    Yes. Report them at <http://bugzilla.hashbang.ca/...>
+
+AUTHOR
+    Mike.lifeguard <mike.lifeguard@gmail.com>
+
+COPYING
+    Copyright (C) 2010 by Mike.lifeguard.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation; either version 3 of the License, or (at your
+    option) any later version.
+
+    This library is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+    Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program. If not, see <http://www.gnu.org/licenses/>.
+
+BUGS
+    Yes. This is a proof-of-concept, and there are several issues with both
+    MediaWiki::Bot::Plugin::Steward and this module. It should be considered
+    pre-alpha. I'm releasing the code so others can find and fix them, in
+    the hope that it will be useful for others.
+
+    Please do not report bugs to me without a patch. I have no plans to work
+    on this further.
 
