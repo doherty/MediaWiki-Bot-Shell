@@ -36,3 +36,4 @@
 \bMANIFEST\.SKIP\b
 \bdist\.ini\b
 \.orig$
+^\.mediawiki-bot-.*-cookies$
