@@ -623,6 +623,16 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+=head1 BUGS
+
+Yes. This is a proof-of-concept, and there are several issues with both
+L<MediaWiki::Bot::Plugin::Steward> and this module. It should be considered
+pre-alpha. I'm releasing the code so others can find and fix them, in the
+hope that it will be useful for others.
+
+Please do not report bugs to me without a patch. I have no plans to work on
+this further.
+
 =cut
 
 1;
