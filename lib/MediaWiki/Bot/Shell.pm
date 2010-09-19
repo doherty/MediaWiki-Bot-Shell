@@ -129,7 +129,8 @@ sub preloop {
             host       => $main{'host'},
             path       => $main{'path'},
             debug      => $debug,
-        });
+        }) or die q{Couldn't log in};
+        $bot->steward_new() or die q{Couldn't log in};
         print ($bot ? " OK\n" : " FAILED\n");
         $o->{'SHELL'}->{'bot'} = $bot;
     }
@@ -173,7 +174,8 @@ sub preloop {
             host        => $main{'host'},
             path        => $main{'path'},
             debug       => $main{'debug'},
-        });
+        }) or die q{Couldn't log in};
+        $bot->steward_new() or die q{Couldn't log in};
         print ($bot ? " OK\n" : " FAILED\n");
         $o->{'SHELL'}->{'bot'} = $bot;
     }
