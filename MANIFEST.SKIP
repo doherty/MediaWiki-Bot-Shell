@@ -35,3 +35,4 @@
 
 \bMANIFEST\.SKIP\b
 \bdist\.ini\b
+\.orig$
